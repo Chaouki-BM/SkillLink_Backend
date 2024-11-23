@@ -1,4 +1,5 @@
 const Resultat=require('../Models/Resultat.model')
+const Theme = require('../Models/theme.model')
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const path = require('path');
@@ -15,19 +16,30 @@ const extractTextFromPDF = async (filePath) => {
 
 const postuler=async(req,res)=>{
     try {
-    const {EmployeId,id}=req.body;
-    const pdf = await CV.findById({Employe:EmployeId,_id:id});
+    const {EmployeId,idCv,OfferId}=req.body;
+    const pdf = await CV.findById({Employe:EmployeId,_id:idCv});
     let filePath=path.resolve(pdf.pdf)
     const text = await extractTextFromPDF(filePath);
-    console.log(text.toLowerCase());
     const lowerCaseText = text.toLowerCase();
+    
+    
     const doc = nlp(lowerCaseText);
-    const keyword = "php";
-    if (doc.has(keyword)) {
-        console.log(`The text contains the word: ${keyword}`);
-      } else {
-        console.log(`The word "${keyword}" was not found in the text.`);
-      }
+   // const keyword = "php";
+
+    const keywords= await Theme.find({offer:OfferId});
+    const isCompatible = keywords.every((word) => doc.has(word.motCle.toLowerCase()));
+      if (!isCompatible) {
+        return res.status(404).json({
+           success:false,
+            message:"The CV is not compatible with the job offer."  
+        })
+      } 
+    console.log(`The CV is compatible with the job offer!`);
+    return res.status(200).json({
+      success:true,
+       message:"The CV is compatible with the job offer!"  
+   })
+    
 } catch (error) {
     console.error("Error:", error.message);
 }

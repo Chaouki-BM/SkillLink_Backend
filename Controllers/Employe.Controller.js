@@ -32,19 +32,19 @@ const Login_EMP=async(req,res)=>{
             }
 
 
-            let token =jwt.sign( { exist } , process.env.TOKEN_SECRET, { expiresIn: '24h' });
+            let token =jwt.sign( { exist:exist._id } , process.env.TOKEN_SECRET, { expiresIn: '24h' });
             console.log(token);
             res.status(200).json({
                 success:true,
                 message:'welcome back',
                 result:{
                     token:token,
-                    // id: exist._id,
-                    // etat: exist.etat,
-                    // avatar: exist.avatar,
-                    // nom: exist.nom,
-                    // prenom: exist.prenom,
-                    // role: exist.role
+                     id: exist._id,
+                     etat: exist.etat,
+                     avatar: exist.avatar,
+                     nom: exist.nom,
+                     prenom: exist.prenom,
+                     role: exist.role
                 }
             })
             
