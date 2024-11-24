@@ -62,6 +62,7 @@ try{
         if (!enterprise || enterprise.role!=="entreprise") {
             return res.status(404).json({ message: 'Enterprise not found' });
         }
+    
         const {idOffer}=req.body
         const AllQuestion=await Question.find({offer:idOffer}).populate({path:'offer'})
         res.status(200).json({

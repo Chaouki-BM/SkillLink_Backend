@@ -13,7 +13,7 @@ const Login_Ent=async(req,res)=>{
             let verifP=await bcrypt.compare(password,exist.password);
             if(verifP){
                 if(exist.etat==false){
-                    const verificationLink = `http://127.0.0.1:3500/verificationEnt?email=${exist.email}`;
+                    const verificationLink = `${process.env.URL_BACK}verificationEnt?email=${exist.email}`;
     
                     // Construct the email request body
                         const emailData = {
@@ -83,7 +83,7 @@ const SignIN_Ent=async(req,res)=>{
                    success:true,
                    result:result   
                })
-               const verificationLink = `http://127.0.0.1:3500/verificationEnt?email=${existEnt._id}`;
+               const verificationLink = `${process.env.URL_BACK}verificationEnt?email=${existEnt._id}`;
    
                // Construct the email request body
                    const emailData = {
@@ -139,7 +139,7 @@ const Forget_Password =async(req,res)=>{
             success:false,
             message:"Email incorrect"
         })
-        const verificationLink = `http://127.0.0.1:3500/:${existEnt._id}`;//bch ya3ml rederaction l page forget password
+        const verificationLink = `${process.env.URL_BACK}:${existEnt._id}`;//bch ya3ml rederaction l page forget password
 
         // Construct the email request body
             const emailData = {

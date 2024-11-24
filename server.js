@@ -16,6 +16,7 @@ const QuestionRoutes=require("./Routes/Question.Routes")
 const ThemeRoutes=require("./Routes/Theme.Routes");
 const CvRoutes=require("./Routes/Cv.Routes");
 const ResualtatRoutes=require('./Routes/Resultat.Routes')
+const ReponseRoutes=require('./Routes/Reponse.Routes')
 app.use("/",EmpRoutes)
 app.use("/",EntRoutes)
 app.use("/",OfferRoutes)
@@ -24,6 +25,7 @@ app.use("/",ThemeRoutes)
 app.use("/",CvRoutes)
 app.use('/uploads', express.static('uploads'));
 app.use('/',ResualtatRoutes)
+app.use("/",ReponseRoutes)
 //concction to database
 
 mongoose.connect(process.env.MONGO_URI).then(()=>{
