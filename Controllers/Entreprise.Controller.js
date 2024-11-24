@@ -112,11 +112,12 @@ const Verif_Mail=async(req,res)=>{
         if(existEnt){
             existEnt.etat=true; 
            const updateEtat=await existEnt.save();
-           res.status(200).json({
-            success:true,
-            message:"verification done.",
-            Entreprise:updateEtat
-           })
+           res.redirect(`http://localhost:5173/login`);
+        //    res.status(200).json({
+        //     success:true,
+        //     message:"verification done.",
+        //     Entreprise:updateEtat
+        //    })
     
     }else{
         res.status(400).json({
@@ -139,7 +140,7 @@ const Forget_Password =async(req,res)=>{
             success:false,
             message:"Email incorrect"
         })
-        const verificationLink = `${process.env.URL_BACK}:${existEnt._id}`;//bch ya3ml rederaction l page forget password
+        const verificationLink = `http://localhost:5173/login/${existEnt._id}`;//bch ya3ml rederaction l page forget password
 
         // Construct the email request body
             const emailData = {
