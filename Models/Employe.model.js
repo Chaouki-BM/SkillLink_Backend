@@ -8,6 +8,7 @@ const EmployeSchema=new mongoose.Schema({
   prenom: {type:String,require:true},
   role: {type:String,default:"employe"},
   posteT:{type:String,require:true},
+  NumT:{type:String,require:true},
 },{
     timestamps:true
 })

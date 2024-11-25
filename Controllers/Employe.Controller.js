@@ -3,27 +3,30 @@ const bcrypt =require('bcrypt');
 const jwt=require('jsonwebtoken');
 const generator = require('generate-password');
 const SendEmailMiddleware = require('../Middleware/NodeMailer');
-
+const Pdf=require('../Models/Cv.model')
 const Login_EMP=async(req,res)=>{ 
     try{
     let {email,password}=req.body;
     
+    
     let exist=await Employe.findOne({email:email});
+    
     if(exist){
         let verifP=await bcrypt.compare(password,exist.password);
         if(verifP){
             if(exist.etat==false){
                 const verificationLink = `${process.env.URL_BACK}verification?email=${exist.email}`;
-
+                
                 // Construct the email request body
-                    const emailData = {
+                    let emailData = {
                         to: exist.email,
                         subject: 'Please verify your email address',
-                        name: existEmp.nom+"\t"+exist.prenom,
+                        name: exist.nom+"\t"+exist.prenom,
                         link: verificationLink,
                         buttonText:'Verify Your Account',
                         emailMessage:'Thank you for signing up! To complete your registration, please click the button below:'
                     }; 
+                    
              SendEmailMiddleware({ body: emailData }, res); 
                 return res.status(401).json({
                     success:false,
@@ -31,7 +34,9 @@ const Login_EMP=async(req,res)=>{
                 })
             }
 
-
+            const Cv=await Pdf.find({Employe:exist._id})
+            console.log(Cv);
+            
             let token =jwt.sign( { exist:exist._id } , process.env.TOKEN_SECRET, { expiresIn: '24h' });
             console.log(token);
             res.status(200).json({
@@ -44,7 +49,8 @@ const Login_EMP=async(req,res)=>{
                      avatar: exist.avatar,
                      nom: exist.nom,
                      prenom: exist.prenom,
-                     role: exist.role
+                     role: exist.role,
+                     Cv:Cv
                 }
             })
             
@@ -62,8 +68,7 @@ const Login_EMP=async(req,res)=>{
         })
     }
 }catch(error){
-   
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({message: "Internal server error" });
 }
 }
 // const CodeGenerator=()=>{
@@ -77,7 +82,7 @@ const Login_EMP=async(req,res)=>{
 
 
 const SignIN_Emp=async(req,res)=>{
- let {email,password,nom,prenom,posteT}=req.body;
+ let {email,password,nom,prenom,posteT,NumT}=req.body;
  try{
     const existEmp=await Employe.findOne({email})
     if(existEmp)
@@ -92,7 +97,8 @@ const SignIN_Emp=async(req,res)=>{
             avatar:"null",
             nom,
             prenom,
-            posteT
+            posteT,
+            NumT
         })
         if(result){
             res.status(201).json({
@@ -207,8 +213,78 @@ const update_Password=async(req,res)=>{
         })
     }
 }
+const UpAvatar=async(req,res)=>{
+    try {
+        const userId = req.user.exist; 
+        const employe = await Employe.findById(userId);
+        console.log(employe);
+        if (!employe || employe.role!=="employe") {
+            return res.status(404).json({ message: 'Employe not found' });
+        }
+            // Check if file was uploaded
+            if (!req.file) {
+                return res.status(400).json({ message: 'No Avatar uploaded' });   
+            }
+            // Create a new PDF document with the file path
+            employe.avatar=req.file.path
+            await employe.save();
+    
+            res.status(201).json({
+                message: 'Avatar uploaded and file path saved to database',
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    };
 
-
+const getData=async(req,res)=>{
+    try{
+    const userId = req.user.exist; 
+    const employe = await Employe.findById(userId);
+    console.log(employe);
+    if (!employe || employe.role!=="employe") {
+        return res.status(404).json({ message: 'Employe not found' });
+    }
+    const Cv=await Pdf.find({Employe:userId})
+    res.status(200).json({
+        success:true,
+        nom:employe.nom,
+        prenom:employe.prenom,
+        posteT:employe.posteT,
+        NumT:employe.NumT,
+        avatar:employe.avatar,
+        CV:Cv
+    })
+}catch (error) {
+    res.status(500).json({ message: error.message });
+}
+}
+const UpdateProfile=async(req,res)=>{
+    try{
+    const userId = req.user.exist; 
+    const employe = await Employe.findById(userId);
+    console.log(employe);
+    if (!employe || employe.role!=="employe") {
+        return res.status(404).json({ message: 'Employe not found' });
+    }
+    const {nom,prenom,posteT,NumT,avatar}=req.body
+    employe.nom=nom
+    employe.prenom=prenom
+    employe.posteT=posteT
+    employe.NumT=NumT
+    employe.avatar=avatar
+    await employe.save();
+}catch (error) {
+    res.status(500).json({ message: error.message });
+}
+}
 module.exports={
-    Login_EMP,SignIN_Emp,Forget_Password,Verif_Mail,update_Password
+    Login_EMP,
+    SignIN_Emp,
+    Forget_Password,
+    Verif_Mail,
+    update_Password,
+    UpAvatar,
+    getData,
+    UpdateProfile
 }

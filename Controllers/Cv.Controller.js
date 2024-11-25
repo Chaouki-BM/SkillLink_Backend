@@ -4,7 +4,7 @@ const Employe=require('../Models/Employe.model')
 const fs = require('fs')
 const UploadCv =async (req, res) => {
     try {
-    const userId = req.user.exist._id; 
+    const userId = req.user.exist; 
     
     
     const employe = await Employe.findById(userId);
