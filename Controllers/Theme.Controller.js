@@ -2,7 +2,7 @@ const Entreprise=require('../Models/Entreprise.model')
 const Theme = require('../Models/theme.model')
 const AddTheme=async(req,res)=>{
     try{
-        const userId = req.user.exist._id; 
+        const userId = req.user.exist; 
         const enterprise = await Entreprise.findById(userId);
         if (!enterprise || enterprise.role!=="entreprise") {
             return res.status(404).json({ message: 'Enterprise not found' });
@@ -40,7 +40,7 @@ const AddTheme=async(req,res)=>{
     }
     const DeleteTheme=async(req,res)=>{
         try{
-            const userId = req.user.exist._id; 
+            const userId = req.user.exist; 
             console.log(userId);
             
             const enterprise = await Entreprise.findById(userId);

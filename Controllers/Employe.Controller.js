@@ -259,25 +259,37 @@ const getData=async(req,res)=>{
     res.status(500).json({ message: error.message });
 }
 }
-const UpdateProfile=async(req,res)=>{
-    try{
-    const userId = req.user.exist; 
-    const employe = await Employe.findById(userId);
-    console.log(employe);
-    if (!employe || employe.role!=="employe") {
-        return res.status(404).json({ message: 'Employe not found' });
+const UpdateProfile = async (req, res) => {
+    try {
+        const userId = req.user.exist; 
+        const { nom, prenom, posteT, NumT } = req.body; 
+        const employe = await Employe.findByIdAndUpdate(
+            userId, 
+            {
+                nom,
+                prenom,
+                posteT,
+                NumT,
+            }, 
+            {
+                new: true, 
+                runValidators: true, 
+            }
+        );
+        if (!employe) {
+            return res.status(404).json({ message: 'Employe introuvable' });
+        }
+
+        res.status(200).json({
+            message: 'Votre profil a été mis à jour avec succès',
+            data: employe, 
+        });
+
+    } catch (error) {
+      
+        res.status(500).json({ message: error.message });
     }
-    const {nom,prenom,posteT,NumT,avatar}=req.body
-    employe.nom=nom
-    employe.prenom=prenom
-    employe.posteT=posteT
-    employe.NumT=NumT
-    employe.avatar=avatar
-    await employe.save();
-}catch (error) {
-    res.status(500).json({ message: error.message });
-}
-}
+};
 module.exports={
     Login_EMP,
     SignIN_Emp,

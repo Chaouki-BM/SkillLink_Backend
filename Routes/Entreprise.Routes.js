@@ -7,4 +7,5 @@ Router.post("/Rentreprise",EntrepriseController.SignIN_Ent);
 Router.post("/forgetPasswordEnt",EntrepriseController.Forget_Password);
 Router.get("/verificationEnt",EntrepriseController.Verif_Mail);
 Router.get("/UpdatePasswordEnt/:email",EntrepriseController.update_Password);
+Router.post("/UpAvatarEnt",VerifyToken,EntrepriseController.UpAvatar);
 module.exports=Router;

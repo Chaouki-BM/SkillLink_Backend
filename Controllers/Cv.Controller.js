@@ -18,9 +18,8 @@ const UploadCv =async (req, res) => {
             
             
         }
-        const {idEMp}=req.body;
         // Create a new PDF document with the file path
-        const NewCV = new CV({ pdf: req.file.path,Employe:idEMp });
+        const NewCV = new CV({ pdf: req.file.path,Employe:userId });
         const savedPdf = await NewCV.save();
 
         res.status(201).json({
@@ -34,7 +33,7 @@ const UploadCv =async (req, res) => {
 
 const DeleteCv=async (req,res)=>{
 try{
-    const userId = req.user.exist._id; 
+    const userId = req.user.exist; 
     const employe = await Employe.findById(userId);
     console.log(employe);
     if (!employe || employe.role!=="employe") {

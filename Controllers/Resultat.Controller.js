@@ -24,7 +24,6 @@ const postuler=async(req,res)=>{
     
     
     const doc = nlp(lowerCaseText);
-   // const keyword = "php";
 
     const keywords= await Theme.find({offer:OfferId});
     const isCompatible = keywords.every((word) => doc.has(word.motCle.toLowerCase()));

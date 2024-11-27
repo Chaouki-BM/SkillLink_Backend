@@ -61,7 +61,7 @@ const Login_Ent=async(req,res)=>{
     }
 }
 const SignIN_Ent=async(req,res)=>{
-    let {email,password,nom,description,address}=req.body;
+    let {email,password,nom,description,address,siteW,CodePostal}=req.body;
     try{
        const existEnt=await Entreprise.findOne({email})
        if(existEnt)
@@ -77,13 +77,15 @@ const SignIN_Ent=async(req,res)=>{
                avatar:"null",
                nom,
                description,
+               siteW,
+               CodePostal
            })
            if(result){
                res.status(201).json({
                    success:true,
                    result:result   
                })
-               const verificationLink = `${process.env.URL_BACK}verificationEnt?email=${existEnt._id}`;
+               const verificationLink = `${process.env.URL_BACK}verificationEnt?email=${email}`;
    
                // Construct the email request body
                    const emailData = {
@@ -106,9 +108,10 @@ const SignIN_Ent=async(req,res)=>{
 }
 const Verif_Mail=async(req,res)=>{
     try{
-        const { _id } = req.query;
+        const { email } = req.query;
         console.log(email);
-        const existEnt=await Entreprise.findById(_id)
+        const existEnt=await Entreprise.findOne({email})
+        console.log(existEnt);
         if(existEnt){
             existEnt.etat=true; 
            const updateEtat=await existEnt.save();
@@ -188,4 +191,49 @@ const update_Password=async(req,res)=>{
     }
 }
 
-module.exports={Login_Ent,SignIN_Ent,Verif_Mail,Forget_Password,update_Password}
+
+const UpAvatar=async(req,res)=>{
+    try {
+        const userId = req.user.exist;
+        const enterprise = await Entreprise.findById(userId);
+        if (!enterprise || enterprise.role!=="entreprise") {
+            return res.status(404).json({ message: 'Enterprise not found' });
+        }
+            // Check if file was uploaded
+            if (!req.file) {
+                return res.status(400).json({ message: 'No Avatar uploaded' });   
+            }
+            // Create a new PDF document with the file path
+            enterprise.avatar=req.file.path
+            await enterprise.save();
+    
+            res.status(201).json({
+                message: 'Avatar uploaded and file path saved to database',
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    };
+
+// const getData=async(req,res)=>{
+//     try{
+//         const userId = req.user.exist;
+//         const enterprise = await Entreprise.findById(userId);
+//         if (!enterprise || enterprise.role!=="entreprise") {
+//             return res.status(404).json({ message: 'Enterprise not found' });
+//         }
+//     res.status(200).json({
+//         success:true,
+//         nom:employe.nom,
+//         prenom:employe.prenom,
+//         posteT:employe.posteT,
+//         NumT:employe.NumT,
+//         avatar:employe.avatar,
+//         CV:Cv
+//     })
+// }catch (error) {
+//     res.status(500).json({ message: error.message });
+// }
+// }
+
+module.exports={Login_Ent,SignIN_Ent,Verif_Mail,Forget_Password,update_Password,UpAvatar}

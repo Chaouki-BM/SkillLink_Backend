@@ -2,7 +2,7 @@ const Question=require("../Models/Question.model")
 const Entreprise=require('../Models/Entreprise.model')
 const AddQuestion=async(req,res)=>{
 try{
-    const userId = req.user.exist._id; 
+    const userId = req.user.exist; 
     const enterprise = await Entreprise.findById(userId);
     if (!enterprise || enterprise.role!=="entreprise") {
         return res.status(404).json({ message: 'Enterprise not found' });
@@ -27,7 +27,7 @@ try{
 }
 const DeleteQuestion=async(req,res)=>{
     try{
-        const userId = req.user.exist._id; 
+        const userId = req.user.exist; 
         console.log(userId);
         
         const enterprise = await Entreprise.findById(userId);
@@ -55,7 +55,7 @@ const DeleteQuestion=async(req,res)=>{
 }
 const GetAllQuestion=async(req,res)=>{
 try{
-    const userId = req.user.exist._id; 
+    const userId = req.user.exist; 
         console.log(userId);
         
         const enterprise = await Entreprise.findById(userId);
