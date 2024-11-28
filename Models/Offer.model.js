@@ -7,6 +7,7 @@ const OfferSchema = new mongoose.Schema({
     lieu:{type:String,require:true},
     mession:{type:String,require:true},
     exigence:{type:String,require:true},
+    Status:{type:Boolean,default:true},
     Enterprise:{type:mongoose.Schema.Types.ObjectId,ref:'Enterprise'},
 },{
     timestamps:true

@@ -7,4 +7,5 @@ Router.get("/GetAllOfferEmp",VerifyToken,OfferController.GetAllOfferEmp)
 Router.get("/GetAllOfferEnt",VerifyToken,OfferController.GetAllOfferEnt)
 Router.get("/GetOfferById",VerifyToken,OfferController.GetOfferById)
 Router.delete("/DeleteOffer",VerifyToken,OfferController.DeleteOffer)
+Router.patch("/ChangeStatus",VerifyToken,OfferController.ChangeStatus)
 module.exports=Router;

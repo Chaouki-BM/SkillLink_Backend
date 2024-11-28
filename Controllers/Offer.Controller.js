@@ -95,7 +95,7 @@ const GetAllOfferEnt=async(req,res)=>{
             return res.status(404).json({ message: 'Enterprise not found' });
         }
         
-        const AllOffer=await Offer.find({Enterprise:userId}).populate({path:'Enterprise',select:'avatar nom'}).lean()
+        const AllOffer=await Offer.find({Enterprise:userId}).populate({path:'Enterprise'}).lean()
         const offersWithThemes = await Promise.all(AllOffer.map(async (offer) => {
             const themes = await Theme.find({ offer: offer._id }).lean(); 
             return {
@@ -127,7 +127,7 @@ const GetAllOfferEmp=async(req,res)=>{
     if (!employe || employe.role!=="employe") {
         return res.status(404).json({ message: 'Employe not found' });
     }
-        const AllOffer=await Offer.find().populate({path:'Enterprise',select:'avatar nom'}).lean()
+        const AllOffer=await Offer.find().populate({path:'Enterprise'}).lean()
         const offersWithThemes = await Promise.all(AllOffer.map(async (offer) => {
             const themes = await Theme.find({ offer: offer._id }).lean(); 
             return {
@@ -174,13 +174,13 @@ const GetAllOfferEmp=async(req,res)=>{
 //   }
 const GetOfferById=async(req,res)=>{
     try{
-        const userId = req.user.exist;
-        const enterprise = await Entreprise.findById(userId);
-        const OfferId=req.body.OfferId
-        
-        if (!enterprise || enterprise.role!=="entreprise") {
-            return res.status(404).json({ message: 'Enterprise not found' });
+        const userId = req.user.exist; 
+        const employe = await Employe.findById(userId);
+        console.log(employe);
+        if (!employe || employe.role!=="employe") {
+            return res.status(404).json({ message: 'Employe not found' });
         }
+        const OfferId=req.body.OfferId
         const AllOffer=await Offer.findById({Enterprise:userId,_id:OfferId}).populate({path:'Enterprise',select:'avatar nom siteW CodePostal description'})
         res.status(200).json({
             success:true,
@@ -192,5 +192,40 @@ const GetOfferById=async(req,res)=>{
         }) 
     }
 }
+const ChangeStatus=async(req,res)=>{
+try{
+    const userId = req.user.exist;
+    const enterprise = await Entreprise.findById(userId);
+    if (!enterprise || enterprise.role!=="entreprise") {
+        return res.status(404).json({ message: 'Enterprise not found' });
+    }
+    const OfferId=req.body.OfferId
+    const GetOffer=await Offer.findById({Enterprise:userId,_id:OfferId})
+    if(GetOffer.Status==true){
+        GetOffer.Status=false
+        const updated=await GetOffer.save();
+        if(updated)
+        res.status(201).json({
+            success:true,
+            message:'Status change to false.',
+        })
+    }else{
+        GetOffer.Status=true
+        const updated=await GetOffer.save();
+        if(updated)
+        res.status(201).json({
+            success:true,
+            message:'status change to true.',
+            
+        })
+    }
+    
 
-module.exports={CreateOffer,DeleteOffer,GetAllOfferEnt,GetOfferById,GetAllOfferEmp}
+ }catch(err){
+        res.status(500).json({
+            message:"Internal server error !"
+        }) 
+    }
+
+}
+module.exports={CreateOffer,DeleteOffer,GetAllOfferEnt,GetOfferById,GetAllOfferEmp,ChangeStatus}
