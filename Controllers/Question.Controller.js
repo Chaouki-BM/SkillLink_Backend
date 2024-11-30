@@ -1,5 +1,17 @@
 const Question=require("../Models/Question.model")
 const Entreprise=require('../Models/Entreprise.model')
+
+//Example mt3 kifh lazem tkoun Request
+// {
+//     "titre": "What is the capital of France?",
+//     "offer": "6324abc1234567",
+//     "reponses": [
+//         { "reponseText": "Paris", "isCorrect": true },
+//         { "reponseText": "London", "isCorrect": false },
+//         { "reponseText": "Berlin", "isCorrect": false }
+//     ]
+// }
+
 const AddQuestion=async(req,res)=>{
 try{
     const userId = req.user.exist; 
@@ -7,24 +19,30 @@ try{
     if (!enterprise || enterprise.role!=="entreprise") {
         return res.status(404).json({ message: 'Enterprise not found' });
     }
+    console.log("----------->",userId);
+    
+    
+        const { titre, offer, reponses } = req.body;
 
-    const {titre,reponse,idOffer}=req.body;
-    const newQ=new Question({
-        titre,
-        reponse,
-        offer:idOffer,
-    })
-    await newQ.save()
-    return res.status(201).json({
-        success:true,
-        message:"Question created successfully"
-    })
-}catch(err){
-    res.status(500).json({
-        message:"Internal server error!"
-    })
+        const newQuestion = new Question({
+            titre,
+            offer,
+            reponses 
+        });
+
+        await newQuestion.save();
+            return res.status(201).json({
+                success: true,
+                message: "Question with responses created successfully",
+            });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Internal server error!"
+        });
+    }
 }
-}
+
 const DeleteQuestion=async(req,res)=>{
     try{
         const userId = req.user.exist; 
@@ -34,18 +52,19 @@ const DeleteQuestion=async(req,res)=>{
         if (!enterprise || enterprise.role!=="entreprise") {
             return res.status(404).json({ message: 'Enterprise not found' });
         }
-        const {id,idOffer}=req.body;
-        const DeleteQuestion=await Question.deleteOne({offer:idOffer,_id:id})
-        if(DeleteQuestion.deletedCount!=0)
+        const {questionId}=req.body;
+        const DeleteQuestion=await Question.findByIdAndDelete(questionId)
+        if(!DeleteQuestion){
           return res.status(200).json({
         success:true,
-        message:"Question deleted successfully"
+        message:"Question not found !"
         })
-
+    }
         res.status(200).json({
-            success:false,
-            message:"Question not found!"
-            })
+            success:true,
+            message:"Question deleted successfully"
+        })
+       
         
     }catch(err){
         res.status(500).json({

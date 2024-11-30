@@ -235,5 +235,36 @@ const UpAvatar=async(req,res)=>{
 //     res.status(500).json({ message: error.message });
 // }
 // }
+const UpdateProfile = async (req, res) => {
+    try {
+        const userId = req.user.exist; 
+        const { nom, description, address, siteW,CodePostal } = req.body; 
+        const enterprise = await Entreprise.findByIdAndUpdate(
+            userId, 
+            {
+                nom,
+                description,
+                address,
+                siteW,
+                CodePostal
+            }, 
+            {
+                new: true, 
+                runValidators: true, 
+            }
+        );
+        if (!enterprise) {
+            return res.status(404).json({ message: 'Enterprise introuvable' });
+        }
 
-module.exports={Login_Ent,SignIN_Ent,Verif_Mail,Forget_Password,update_Password,UpAvatar}
+        res.status(200).json({
+            message: 'Votre profil a été mis à jour avec succès',
+            data: enterprise, 
+        });
+
+    } catch (error) {
+      
+        res.status(500).json({ message: error.message });
+    }
+};
+module.exports={Login_Ent,SignIN_Ent,Verif_Mail,Forget_Password,update_Password,UpAvatar,UpdateProfile}
