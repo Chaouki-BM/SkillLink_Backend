@@ -56,7 +56,7 @@ const DeleteQuestion=async(req,res)=>{
         const DeleteQuestion=await Question.findByIdAndDelete(questionId)
         if(!DeleteQuestion){
           return res.status(200).json({
-        success:true,
+        success:false,
         message:"Question not found !"
         })
     }
