@@ -181,7 +181,7 @@ const GetOfferById=async(req,res)=>{
             return res.status(404).json({ message: 'Employe not found' });
         }
         const OfferId=req.body.OfferId
-        const AllOffer=await Offer.findById({Enterprise:userId,_id:OfferId}).populate({path:'Enterprise',select:'avatar nom siteW CodePostal description'})
+        const AllOffer=await Offer.findById({_id:OfferId}).populate({path:'Enterprise',select:'avatar nom siteW CodePostal description'})
         res.status(200).json({
             success:true,
             resault:AllOffer
