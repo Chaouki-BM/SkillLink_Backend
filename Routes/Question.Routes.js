@@ -4,5 +4,5 @@ const QuestionController=require("../Controllers/Question.Controller")
 const VerifyToken=require('../Middleware/VerifToken')
 Router.post("/CreateQuestion",VerifyToken,QuestionController.AddQuestion)
 Router.delete("/DeleteQuestion",VerifyToken,QuestionController.DeleteQuestion)
-Router.get("/GetAllQuestion",VerifyToken,QuestionController.GetAllQuestion)
+Router.get("/GetQuizzByOffer",VerifyToken,QuestionController.GetQuizzByOffer)
 module.exports=Router

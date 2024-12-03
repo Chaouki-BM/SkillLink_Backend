@@ -176,17 +176,22 @@ const GetOfferById=async(req,res)=>{
     try{
         const userId = req.user.exist; 
         const employe = await Employe.findById(userId);
-        console.log(employe);
         if (!employe || employe.role!=="employe") {
             return res.status(404).json({ message: 'Employe not found' });
         }
-        const OfferId=req.body.OfferId
-        const AllOffer=await Offer.findById({_id:OfferId}).populate({path:'Enterprise',select:'avatar nom siteW CodePostal description'})
+        const { offerId } = req.params;
+        console.log(offerId);
+        const offer = await Offer.findById(offerId).populate({
+            path: 'Enterprise',
+            select: 'avatar nom siteW CodePostal description'
+        });
+        console.log(Offer);
         res.status(200).json({
             success:true,
-            resault:AllOffer
+            resault:offer
         })
     }catch(err){
+        console.log(err);
         res.status(500).json({
             message:"Internal server error !"
         }) 
@@ -228,4 +233,40 @@ try{
     }
 
 }
-module.exports={CreateOffer,DeleteOffer,GetAllOfferEnt,GetOfferById,GetAllOfferEmp,ChangeStatus}
+const UpdateOfferById = async (req, res) => {
+    try {
+        const userId = req.user.exist;
+        const enterprise = await Entreprise.findById(userId);
+        if (!enterprise || enterprise.role!=="entreprise") {
+            return res.status(404).json({ message: 'Enterprise not found' });
+        }
+        const { offerId } = req.params; 
+        const updates = req.body; 
+
+        
+        const updatedOffer = await Offer.findByIdAndUpdate(
+            offerId,
+            updates,
+            { new: true, runValidators: true } 
+        );
+
+        
+        if (!updatedOffer) {
+            return res.status(404).json({ message: 'Offer not found' });
+        }
+
+        
+        res.status(200).json({
+            success: true,
+            message: 'Offer updated successfully',
+            data: updatedOffer
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: 'Internal server error!'
+        });
+    }
+};
+
+module.exports={CreateOffer,DeleteOffer,GetAllOfferEnt,GetOfferById,GetAllOfferEmp,ChangeStatus,UpdateOfferById}

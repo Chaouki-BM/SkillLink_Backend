@@ -1,5 +1,8 @@
 const Resultat=require('../Models/Resultat.model')
 const Theme = require('../Models/theme.model')
+const Entreprise=require('../Models/Entreprise.model')
+const Employe=require('../Models/Employe.model')
+const Offer=require('../Models/Offer.model')
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const path = require('path');
@@ -43,5 +46,64 @@ const postuler=async(req,res)=>{
     console.error("Error:", error.message);
 }
 }
+const PostScorecondidature=async(req,res)=>{
+try{
+  const{offer,Employe,score}=req.body
+  if(score>=70){
+    const newResultat = new Resultat({
+      offer,
+      Employe,
+      score
+  });
 
-module.exports={postuler}
+  await newResultat.save();
+  return res.status(201).json({
+    success: true,
+    message: "Application accepted successfully.",
+});
+  }else{
+    return res.status(201).json({
+      success: true,
+      message: "Application rejected.",
+  });
+  }
+}catch(err){
+  console.error("Error:", err.message);
+  res.status(500).json({
+    message:"Internal server error !"
+}) 
+}
+} 
+//hathi lel espace employer 
+const GetListeCondidature=async(req,res)=>{
+  try{
+    const userId = req.user.exist; 
+    const employe = await Employe.findById(userId);
+    console.log(employe);
+    if (!employe || employe.role!=="employe") {
+        return res.status(404).json({ message: 'Employe not found' });
+    }
+    const resultat= await Resultat.find({Employe:userId}).populate({
+      path: 'offer',
+      select: 'titre Enterprise',
+       populate: {
+         path: 'Enterprise',
+         select: 'nom avatar'
+     }
+    }).lean()
+    if (!resultat) {
+      return res.status(404).json({ message: 'Result not found' });
+  }
+  res.status(200).json({
+      success: true,
+         resultat: resultat
+      
+  });
+  }catch(err){
+    console.error("Error:", err.message);
+    res.status(500).json({
+      message:"Internal server error !"
+  })  
+  }
+}
+module.exports={postuler,PostScorecondidature,GetListeCondidature}

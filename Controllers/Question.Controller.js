@@ -93,10 +93,9 @@ const DeleteQuestion=async(req,res)=>{
         })
     }
 }
-const GetAllQuestion=async(req,res)=>{
+const GetQuizzByOffer=async(req,res)=>{
 try{
     const userId = req.user.exist; 
-        console.log(userId);
         
         const enterprise = await Entreprise.findById(userId);
         if (!enterprise || enterprise.role!=="entreprise") {
@@ -104,7 +103,7 @@ try{
         }
     
         const {idOffer}=req.body
-        const AllQuestion=await Question.find({offer:idOffer}).populate({path:'offer'})
+        const AllQuestion=await Question.find({offer:idOffer})
         res.status(200).json({
             success:true,
             resault:AllQuestion
@@ -115,4 +114,5 @@ try{
     }) 
 }
 }
-module.exports={AddQuestion,DeleteQuestion,GetAllQuestion}
+
+module.exports={AddQuestion,DeleteQuestion,GetQuizzByOffer}
