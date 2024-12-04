@@ -106,4 +106,36 @@ const GetListeCondidature=async(req,res)=>{
   })  
   }
 }
-module.exports={postuler,PostScorecondidature,GetListeCondidature}
+const GetListeCondidatureE=async(req,res)=>{
+  try{
+    const userId = req.user.exist;
+    const enterprise = await Entreprise.findById(userId);
+
+    if (!enterprise || enterprise.role !== "entreprise") {
+        return res.status(404).json({ message: 'Enterprise not found' });
+    }
+    const offers = await Offer.find({ Enterprise: userId }).select('titre')
+    .populate({
+      path: 'resultats',
+      populate: {
+          path: 'Employe',
+          select: 'nom prenom avatar', 
+          populate: {
+              path: 'Cv',
+              select: 'pdf' 
+          }
+      }
+  }).lean();
+    res.status(200).json({
+      success: true,
+      data: offers
+  });
+  }catch(err){
+    console.error("Error:", err.message);
+    res.status(500).json({
+      message:"Internal server error !"
+  })  
+  }
+}
+
+module.exports={postuler,PostScorecondidature,GetListeCondidature,GetListeCondidatureE}

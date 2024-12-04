@@ -11,5 +11,15 @@ const EmployeSchema=new mongoose.Schema({
   NumT:{type:String,require:true},
 },{
     timestamps:true
-})
+});
+
+EmployeSchema.virtual('Cv', {
+  ref: 'Cv',
+  localField: '_id',
+  foreignField: 'Employe'
+});
+
+EmployeSchema.set('toObject', { virtuals: true });
+EmployeSchema.set('toJSON', { virtuals: true });
+
 module.exports=mongoose.model('Employe',EmployeSchema)
