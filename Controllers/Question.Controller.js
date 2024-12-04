@@ -102,7 +102,7 @@ try{
             return res.status(404).json({ message: 'Enterprise not found' });
         }
     
-        const {idOffer}=req.body
+        const {idOffer}=req.params
         const AllQuestion=await Question.find({offer:idOffer})
         res.status(200).json({
             success:true,
