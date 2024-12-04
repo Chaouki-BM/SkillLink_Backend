@@ -6,4 +6,6 @@ Router.post('/Post',ResualtatController.postuler);
 Router.post('/PostScorecondidature',ResualtatController.PostScorecondidature);
 Router.get('/GetListeCondidature',VerifyToken,ResualtatController.GetListeCondidature);
 Router.get('/GetListeCondidatureE',VerifyToken,ResualtatController.GetListeCondidatureE);
+Router.post('/AccepterCondidature',VerifyToken,ResualtatController.accepter);
+Router.post('/RefuseCondidature',VerifyToken,ResualtatController.refuse);
 module.exports = Router;

@@ -137,5 +137,71 @@ const GetListeCondidatureE=async(req,res)=>{
   })  
   }
 }
+const accepter=async(req,res)=>{
+try{
+  const userId = req.user.exist;
+  const enterprise = await Entreprise.findById(userId);
 
-module.exports={postuler,PostScorecondidature,GetListeCondidature,GetListeCondidatureE}
+  if (!enterprise || enterprise.role !== "entreprise") {
+      return res.status(404).json({ message: 'Enterprise not found' });
+  }
+  const {ResultatrId}=req.body
+  const updatedEtat = await Resultat.findByIdAndUpdate(
+    ResultatrId,
+    {etat:"Accepté"},
+    { new: true, runValidators: true } 
+  );
+    if (!updatedEtat) {
+      return res.status(404).json({ message: 'Resultat not found' });
+  }
+
+
+  res.status(200).json({
+      success: true,
+      message: 'état updated successfully',
+      data: updatedEtat
+  });
+}catch(err){
+  console.error("Error:", err.message);
+  res.status(500).json({
+    message:"Internal server error !"
+})   
+}
+}
+const refuse=async(req,res)=>{
+  try{
+    const userId = req.user.exist;
+    const enterprise = await Entreprise.findById(userId);
+
+    if (!enterprise || enterprise.role !== "entreprise") {
+        return res.status(404).json({ message: 'Enterprise not found' });
+    }
+    const {ResultatrId}=req.body
+    const updatedEtat = await Resultat.findByIdAndUpdate(
+      ResultatrId,
+      {etat:"Refusé"},
+      { new: true, runValidators: true } 
+    );
+      if (!updatedEtat) {
+        return res.status(404).json({ message: 'Resultat not found' });
+    }
+
+
+    res.status(200).json({
+        success: true,
+        message: 'état updated successfully',
+        data: updatedEtat
+    });
+  }catch(err){
+    console.error("Error:", err.message);
+    res.status(500).json({
+      message:"Internal server error !"
+  })   
+  }
+}
+module.exports={postuler,
+  PostScorecondidature,
+  GetListeCondidature,
+  GetListeCondidatureE,
+  accepter,
+  refuse}
