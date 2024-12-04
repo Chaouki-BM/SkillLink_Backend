@@ -1,6 +1,6 @@
 const Question=require("../Models/Question.model")
 const Entreprise=require('../Models/Entreprise.model')
-
+const Employe=require('../Models/Employe.model')
 //Example mt3 kifh lazem tkoun Request lazem t7othom fi array of questions kima lota 
 // 7athr data ta3k w ab3thha lel bodi fi array
 // {
@@ -100,8 +100,8 @@ try{
         if (!employe || employe.role!=="employe") {
             return res.status(404).json({ message: 'Employe not found' });
         }
-    
-        const {idOffer}=req.params
+        
+        const {idOffer}=req.params;
         const AllQuestion=await Question.find({offer:idOffer})
         res.status(200).json({
             success:true,
