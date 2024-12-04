@@ -96,10 +96,9 @@ const DeleteQuestion=async(req,res)=>{
 const GetQuizzByOffer=async(req,res)=>{
 try{
     const userId = req.user.exist; 
-        
-        const enterprise = await Entreprise.findById(userId);
-        if (!enterprise || enterprise.role!=="entreprise") {
-            return res.status(404).json({ message: 'Enterprise not found' });
+        const employe = await Employe.findById(userId);
+        if (!employe || employe.role!=="employe") {
+            return res.status(404).json({ message: 'Employe not found' });
         }
     
         const {idOffer}=req.params
