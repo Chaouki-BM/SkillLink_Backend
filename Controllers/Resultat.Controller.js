@@ -122,7 +122,11 @@ const GetListeCondidatureE=async(req,res)=>{
           path: 'Enterprise', 
       }
   })
-  .populate('Employe')  
+  .populate({path:'Employe',
+    populate: {
+                  path: 'Cv',
+              }
+  })  
           
     // .select('score ')
   //   .populate({
