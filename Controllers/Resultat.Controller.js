@@ -114,18 +114,28 @@ const GetListeCondidatureE=async(req,res)=>{
     if (!enterprise || enterprise.role !== "entreprise") {
         return res.status(404).json({ message: 'Enterprise not found' });
     }
-    const offers = await Offer.find({ Enterprise: userId }).select('titre')
+    const offers = await Resultat.find()
     .populate({
-      path: 'resultats',
+      path: 'offer',
+      match: { 'Enterprise': userId },
       populate: {
-          path: 'Employe',
-          select: 'nom prenom avatar', 
-          populate: {
-              path: 'Cv',
-              select: 'pdf' 
-          }
+          path: 'Enterprise', 
       }
-  }).lean();
+  })
+  .populate('Employe')  
+          
+    // .select('score ')
+  //   .populate({
+  //     path: 'resultats',
+  //     populate: {
+  //         path: 'Employe',
+  //         select: 'nom prenom avatar', 
+  //         populate: {
+  //             path: 'Cv',
+  //             select: 'pdf' 
+  //         }
+  //     }
+  // }).lean();
     res.status(200).json({
       success: true,
       data: offers
