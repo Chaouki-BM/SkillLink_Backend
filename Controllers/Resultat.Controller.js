@@ -3,6 +3,8 @@ const Theme = require('../Models/theme.model')
 const Entreprise=require('../Models/Entreprise.model')
 const Employe=require('../Models/Employe.model')
 const Offer=require('../Models/Offer.model')
+const sendRejectionEmail = require('../Middleware/RejectionEmail');
+const sendAcceptanceEmail = require('../Middleware/AcceptanceEmail');
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 const path = require('path');
@@ -74,7 +76,7 @@ try{
 }) 
 }
 } 
-//hathi lel espace employer 
+
 const GetListeCondidature=async(req,res)=>{
   try{
     const userId = req.user.exist; 
@@ -168,6 +170,28 @@ try{
     if (!updatedEtat) {
       return res.status(404).json({ message: 'Resultat not found' });
   }
+        const offers = await Resultat.findById(ResultatrId)
+        .populate({
+          path: 'offer',
+          select:'titre',
+          populate: {
+            path: 'Enterprise',
+            select:'nom', 
+        }
+      })
+      .populate({
+        path:'Employe',
+        select:' nom prenom email'
+      }).lean()
+      console.log(offers);
+
+        const emailData = {
+          candidateName: offers.Employe.nom+"\t"+offers.Employe.prenom,
+          jobTitle: offers.offer.titre,
+          candidateEmail:offers.Employe.email,
+          CompanyName:offers.offer.Enterprise.nom,
+      }; 
+      sendAcceptanceEmail({ body: emailData }, res); 
 
 
   res.status(200).json({
@@ -199,6 +223,28 @@ const refuse=async(req,res)=>{
       if (!updatedEtat) {
         return res.status(404).json({ message: 'Resultat not found' });
     }
+    const offers = await Resultat.findById(ResultatrId)
+    .populate({
+      path: 'offer',
+      select:'titre',
+      populate: {
+        path: 'Enterprise',
+        select:'nom', 
+    }
+  })
+  .populate({
+    path:'Employe',
+    select:' nom prenom email'
+  }).lean()
+  console.log(offers);
+  
+    const emailData = {
+      candidateName: offers.Employe.nom+"\t"+offers.Employe.prenom,
+      jobTitle: offers.offer.titre,
+      candidateEmail:offers.Employe.email,
+      CompanyName:offers.offer.Enterprise.nom,
+  }; 
+    sendRejectionEmail({ body: emailData }, res); 
 
 
     res.status(200).json({
