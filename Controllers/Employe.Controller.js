@@ -35,10 +35,8 @@ const Login_EMP=async(req,res)=>{
             }
 
             const Cv=await Pdf.find({Employe:exist._id})
-            console.log(Cv);
             
             let token =jwt.sign( { exist:exist._id } , process.env.TOKEN_SECRET, { expiresIn: '24h' });
-            console.log(token);
             res.status(200).json({
                 success:true,
                 message:'welcome back',

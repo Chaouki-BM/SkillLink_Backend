@@ -39,6 +39,8 @@ const Login_Ent=async(req,res)=>{
                     message:'welcome back',
                     result:{
                         token:token,
+                        nom:exist.nom,
+                        avatar:exist.avatar,
                     }
                 })
                 

@@ -2,7 +2,7 @@ const Employe=require('../Models/Employe.model')
 const Entreprise=require('../Models/Entreprise.model')
 const Offer=require('../Models/Offer.model')
 const Theme = require('../Models/theme.model')
-
+const Resultat=require('../Models/Resultat.model')
 
 
 const CreateOffer=async(req,res)=>{
@@ -74,8 +74,12 @@ const DeleteOffer=async(req,res)=>{
         if (!id) {
             return res.status(400).json({ message: 'Offer ID is required' });
         }
-        const DeleteOffer=await Offer.deleteOne({Enterprise:enterprise._id,_id:id})
-        console.log(DeleteOffer);
+        await Offer.deleteOne({Enterprise:enterprise._id,_id:id,})
+        await Resultat.deleteMany({ offer: id });
+       
+        res.status(200).json({
+            success:true
+        })
         
     }catch(err){
         res.status(500).json({
@@ -123,7 +127,6 @@ const GetAllOfferEmp=async(req,res)=>{
     
     
     const employe = await Employe.findById(userId);
-    console.log(employe);
     if (!employe || employe.role!=="employe") {
         return res.status(404).json({ message: 'Employe not found' });
     }
@@ -135,7 +138,6 @@ const GetAllOfferEmp=async(req,res)=>{
                 themes
             };
         }));
-        console.log(offersWithThemes._doc);
         
         res.status(200).json({
             success: true,
