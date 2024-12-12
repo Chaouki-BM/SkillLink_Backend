@@ -177,15 +177,15 @@ const GetAllOfferEmp=async(req,res)=>{
 const GetOfferById=async(req,res)=>{
     try{
         const userId = req.user.exist; 
-        const employe = await Employe.findById(userId);
-        if (!employe || employe.role!=="employe") {
+       /* const employe = await Employe.findById(userId);
+        if (!employe || employe.role!=="employe" ){
             return res.status(404).json({ message: 'Employe not found' });
-        }
+        }*/
         const { offerId } = req.params;
         console.log(offerId);
         const offer = await Offer.findById(offerId).populate({
             path: 'Enterprise',
-            select: 'avatar nom siteW CodePostal description'
+            select: 'avatar nom siteW CodePostal description address'
         });
         console.log(Offer);
         res.status(200).json({

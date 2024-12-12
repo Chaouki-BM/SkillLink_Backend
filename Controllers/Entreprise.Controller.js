@@ -117,7 +117,7 @@ const Verif_Mail=async(req,res)=>{
         if(existEnt){
             existEnt.etat=true; 
            const updateEtat=await existEnt.save();
-           res.redirect(`http://localhost:5173/login`);
+           res.redirect(`http://localhost:5173/loginEnt`);
         //    res.status(200).json({
         //     success:true,
         //     message:"verification done.",
@@ -145,7 +145,7 @@ const Forget_Password =async(req,res)=>{
             success:false,
             message:"Email incorrect"
         })
-        const verificationLink = `http://localhost:5173/login/${existEnt._id}`;//bch ya3ml rederaction l page forget password
+        const verificationLink = `http://localhost:5173/loginEnt/${existEnt._id}`;//bch ya3ml rederaction l page forget password
 
         // Construct the email request body
             const emailData = {

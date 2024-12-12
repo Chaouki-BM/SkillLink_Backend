@@ -6,7 +6,7 @@ Router.post("/CreateOffer",VerifyToken,OfferController.CreateOffer);
 Router.get("/GetAllOfferEmp",VerifyToken,OfferController.GetAllOfferEmp)
 Router.get("/GetAllOfferEnt",VerifyToken,OfferController.GetAllOfferEnt)
 Router.get("/GetOfferById/:offerId",VerifyToken,OfferController.GetOfferById)
-Router.delete("/DeleteOffer",VerifyToken,OfferController.DeleteOffer)
+Router.post("/DeleteOffer",VerifyToken,OfferController.DeleteOffer)
 Router.patch("/ChangeStatus",VerifyToken,OfferController.ChangeStatus)
 Router.put("/UpdateOfferById/:offerId",VerifyToken,OfferController.UpdateOfferById)
 module.exports=Router;

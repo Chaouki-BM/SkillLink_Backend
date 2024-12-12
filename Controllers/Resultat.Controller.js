@@ -38,7 +38,7 @@ const postuler=async(req,res)=>{
             message:"The CV is not compatible with the job offer."  
         })
       } 
-    console.log(`The CV is compatible with the job offer!`);
+    console.log('The CV is compatible with the job offer!');
     return res.status(200).json({
       success:true,
        message:"The CV is compatible with the job offer!"  
@@ -65,7 +65,7 @@ try{
 });
   }else{
     return res.status(201).json({
-      success: true,
+      success: false,
       message: "Application rejected.",
   });
   }
