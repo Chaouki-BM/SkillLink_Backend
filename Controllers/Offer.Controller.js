@@ -5,6 +5,7 @@ const Theme = require('../Models/theme.model')
 const Resultat=require('../Models/Resultat.model')
 
 
+
 const CreateOffer=async(req,res)=>{
     try{
         const {description,titre,experience,Contract,lieu,exigence,mession,motCle}=req.body
@@ -245,12 +246,23 @@ const UpdateOfferById = async (req, res) => {
         const { offerId } = req.params; 
         const updates = req.body; 
 
+        console.log({updates});
         
         const updatedOffer = await Offer.findByIdAndUpdate(
             offerId,
             updates,
             { new: true, runValidators: true } 
         );
+        const { motCle, ...otherFields } = updates;
+        const deleteThemes= await Theme.deleteMany({offer:offerId})
+        if ( motCle.length > 0) {
+            const themes = motCle.map(keyword => ({
+                motCle: keyword,
+                offer: offerId
+            }));
+
+            await Theme.insertMany(themes); 
+        }
 
         
         if (!updatedOffer) {
