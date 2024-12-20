@@ -21,8 +21,14 @@ const extractTextFromPDF = async (filePath) => {
 
 const postuler=async(req,res)=>{
     try {
-    const {EmployeId,idCv,OfferId}=req.body;
-    const pdf = await CV.findById({Employe:EmployeId,_id:idCv});
+      const userId = req.user.exist; 
+    const employe = await Employe.findById(userId);
+    console.log(employe);
+    if (!employe || employe.role!=="employe") {
+        return res.status(404).json({ message: 'Employe not found' });
+    }
+    const {idCv,OfferId}=req.body;
+    const pdf = await CV.findById({Employe:userId,_id:idCv});
     let filePath=path.resolve(pdf.pdf)
     const text = await extractTextFromPDF(filePath);
     const lowerCaseText = text.toLowerCase();

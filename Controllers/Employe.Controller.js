@@ -128,6 +128,8 @@ const SignIN_Emp=async(req,res)=>{
 const Verif_Mail=async(req,res)=>{
     try{
         const { email } = req.query;
+        console.log(email);
+        
         const existEmp=await Employe.findOne({email})
         if(existEmp){
            existEmp.etat=true; 
@@ -135,8 +137,7 @@ const Verif_Mail=async(req,res)=>{
            res.redirect(`http://localhost:5173/login`);
         //    res.status(200).json({
         //     success:true,
-        //     message:"verification done.",
-        //     Employe:updateEtat
+        //     message:"verification done."
         //    })
     
     }else{

@@ -208,6 +208,8 @@ try{
         return res.status(404).json({ message: 'Enterprise not found' });
     }
     const OfferId=req.body.OfferId
+    console.log(req.body.OfferId);
+    
     const GetOffer=await Offer.findById({Enterprise:userId,_id:OfferId})
     if(GetOffer.Status==true){
         GetOffer.Status=false

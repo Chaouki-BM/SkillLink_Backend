@@ -39,9 +39,8 @@ try{
     if (!employe || employe.role!=="employe") {
         return res.status(404).json({ message: 'Employe not found' });
     }
-    const {EmployeId,id}=req.body;
-    const pdf = await CV.findById({Employe:EmployeId,_id:id});
-    
+    const {idCV}=req.body;
+    const pdf = await CV.findById({Employe:userId,_id:idCV});
     
     if (!pdf) {
         return res.status(404).json({ message: 'Cv not found' });  
@@ -52,7 +51,7 @@ try{
         }
         
         // Delete the PDF document from the database
-        CV.findByIdAndDelete({Employe:EmployeId,_id:id})
+        CV.findByIdAndDelete({Employe:userId,_id:idCV})
             .then(() => res.status(200).json({ message: 'Cv deleted successfully' }))
             .catch((error) => res.status(500).json({ message: 'Failed to delete Cv from database', error }));
     });

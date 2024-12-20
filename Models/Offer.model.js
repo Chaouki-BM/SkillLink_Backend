@@ -13,14 +13,4 @@ const OfferSchema = new mongoose.Schema({
     timestamps:true
 });
 
-// Virtual field to populate related Resultats
-OfferSchema.virtual('resultats', {
-    ref: 'Resultat',
-    localField: '_id',
-    foreignField: 'offer'
-});
-
-// Enable virtuals in JSON and Object output
-OfferSchema.set('toObject', { virtuals: true });
-OfferSchema.set('toJSON', { virtuals: true });
 module.exports=mongoose.model("Offer",OfferSchema)

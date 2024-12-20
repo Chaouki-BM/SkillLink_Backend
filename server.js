@@ -2,6 +2,8 @@ require('dotenv').config();
 const cors = require('cors');
 const express =require('express');
 const mongoose= require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger/swaggerConfig');
 const app =express();
 const port = process.env.PORT;
 app.use(express.urlencoded({extended: false}));
@@ -26,6 +28,8 @@ app.use("/",CvRoutes)
 app.use('/uploads', express.static('uploads'));
 app.use('/',ResualtatRoutes)
 app.use("/",ReponseRoutes)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 //concction to database
 
 mongoose.connect(process.env.MONGO_URI).then(()=>{
